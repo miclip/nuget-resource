@@ -1,0 +1,21 @@
+sudo: required
+services:
+- docker
+language: go
+go:
+- '1.11'
+env:
+  global:
+  - COMMIT=${TRAVIS_COMMIT::8}
+  - secure: HyzZ5nAofrZ1CdOwejb2AXI73LH0DsMr0SSKU19Sm2ioO9PFyyH9zA1fgZzx8pnyvqhwcnvIpxuApL4l5CS2qKNbY+KNz0RyECn+1HmPmPXXx4Od84wScMZh5TnmDbHuw4mTsrIu2HOE5Hu/gHjq1R0/IRMbExxHppmvo9HDFdHRpinow2/WnZPzI4EfEVVrchBMgXWRi42PD16Hi1F0sGyKieafso5ENa3kThInLKrhSV4/SAPYGJ5kx2stFjApME/apixL14nwNKVUwAAs6lSK7lTHO6o0aNFRV9TWsPu0MDjQu6hO+kx0bo5CAjk0SS1+8uhI3xaoXv7SnzyiHPQCMOSnPZlqWdKyfYcT443Dav1DrxfkeJQhMd/bzmY3+ooQjzT3mDa5LSYFDm3mSiCySPnWSNh5ulsP06pYwhpZ5j180FXE7VL33eyftH/RWr7oeph9TvrsGiRQFH+CYhnKcbsNiruI5OpTe521ZeG7eU/Hx2LWLr0dgebd85b2E4b+ZYriuWKL8XzYX9eQfA/gZ57w/3JomoqVdnYHWs3du3/fFXw6vv3qYt+cUAOsY2VfJbRq8t/1BzfpZvD2p6zHR0RroBc5dIRSFX5728+cZ8N5zps6ZTShPBQxGDhQGAxE++kmAhK6NwYPpqis/NVuSxPiVg4WcnUnlNECPp8=
+  - secure: g7hBPWZjy+S17SPA2sSN4KTnCjQjFV7hSV+8MqoiaeBdQUtLyfLwBfdr9aFD4YoRcfTGp9WuKyarsM/tkroeDqhSBTmtDS1VRD5KD6pRHRySycILTp7B+TgeUp12AlhlJV/4Zw8e057sfuahkP/SHMWMyISZVcv/R9kvL9qJtjB9K53G2P8C0HvcfLe4NP4erLYVsr8B03+0zPin9yb0HNEONotVMRpYW0Bz1nIjFfMheSEEo4ftRJWcwCCNbKVatN01knLqubUnNqPkxeENX4iCNU3REvvCmAeAHtCzNtpnn6Kl4Xk4rhUr4w+m5jGfWZboAikS1bDxFloiloObf54xOXhPmAri+JhMwaxpUjWPe/lGDQiN9OPjwmzCIOQ51hZxBuzGzMylUB/xcc1d4DNiDRVFVbekAbCt58fnBN/xt+YsII4OzjjEnlozPlteAB6hqXyecNO0J6qLJRi5YKM5l9LEolVyDFY2Wwfw83axDBVnKuta0BI0ANmPtw604SoFy4DTWGNr04EaO72ZFsdjN40SigGgnFP5qN2nhwI+GB+6wvPLDbHA7zFxqydRC1ArzagGk88VhSRznnB+W32mNf4m6A4FEGw/YklDD3DQX5IFhV9tTRinM4OU9LAozIq3LHtmbuRxChmLYNolhIAf1jpW2SVD4msXe8dFrKI=
+  - secure: aM1bSvlO6f/DgJp0B5h4Ct8fh8ZSTwIzUh9VCVJEmixMkbfsX48h8cy0gQBgnzMdNUI9MNKNVYk7bBsyeuNfZR960lBkVBGd4Tjh5VqOe/j+TkI+fWLrkKpBJQnPp3CA9+9mdkGgsYTl9tzZt3NbJvyMXCEKqAmGnzeZKscXIFfhIExPgxEWptPF4CerLT+dpcIKS+Dmr+almqfy4V3x9MvhqjVltBJd+5CA1m8HuYGiks3EBVsSKlh06qzjl26QEYPg70piurmuqgix28zB7fN8ZgewL6TsRWAL3QsCQlPxtXQSwgjl197wr+Iy0msYmkITymQYt5y0SXrgK5vLNVRRzClQGiekHmorJKLT+csEX3aId6GDy01hWnv4LKAc0UVoHsE62RQYe7v4AKCiAI0Ew12g6lSanpNizWqlIOW6N8jq2vCxj1mYi+4ZWT6AsvtF+4e19aOEkBhu8nGffECDiJethL9fFyOoyIU6MZ/gl6c1rlaYhJmViaAHbEXzVAYWdgmD9NjKB6ISDd42cgqcwZLkSldx4JJa/Tns5xwZA33LmKtLmJQ9DLe/cj+IKCdZZM4Uf83q3SZQw6qNdF7s6yu9OWqedbWe7PceuBihGW5CUU3zeBLmUCcnazGW5WnRf8K3LrF++/s0yaQadszO0/o4j0GFS/IDA1iWbh0=
+after_success:
+- docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+- export REPO=miclip/nuget-resource
+- export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH
+  ; fi`
+- docker build -f Dockerfile -t $REPO:$COMMIT .
+- docker tag $REPO:$COMMIT $REPO:$TAG
+- docker tag $REPO:$COMMIT $REPO:travis-$TRAVIS_BUILD_NUMBER
+- docker push $REPO
