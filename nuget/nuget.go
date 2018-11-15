@@ -16,6 +16,7 @@ import (
 	"time"
 
 	"gopkg.in/xmlpath.v1"
+	"github.com/miclip/nuget-resource"
 )
 
 const (
@@ -110,11 +111,17 @@ func (client *nugetclientv3) SearchQueryService(ctx context.Context, searchQuery
 
 func (client *nugetclientv3) PublishPackage(ctx context.Context, apikey string, packagePath string) error {
 	uploadURL, err := client.GetNugetApiEndPoint(ctx, "PackagePublish/2.0.0")
+	nugetresource.Sayf("packagepath: %s", packagePath)
 	if err != nil {
 		log.Fatal("error getting publish url from api", err)
 	}
-
-	matches, _ := filepath.Glob(packagePath)	
+	matches, err := filepath.Glob(packagePath)	
+	if err != nil {
+		log.Fatal("failed searching for packages", err)
+	}
+	if len(matches) == 0 {
+		log.Fatal("no packages found", err)
+	}
 	file, err := os.Open(matches[0])
 	if err != nil {
 		return fmt.Errorf("error reading package %s with %v", packagePath, err)
