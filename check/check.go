@@ -21,12 +21,13 @@ func Execute(request Request) (Response, error) {
 		return Response{}, nil
 	}
 
-	response := []nugetresource.Version{
-		nugetresource.Version{
+	response := []nugetresource.Version{}
+	for _, pv := range packageVersions {
+		response = append(response, nugetresource.Version{
 			PackageID: request.Source.PackageID,
-			Version:   "",
-		},
+			Version:   pv.Version,
+		})
 	}
-
+	
 	return response, nil
 }

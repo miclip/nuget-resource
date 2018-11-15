@@ -2,10 +2,22 @@
 
 
 [[projects]]
+  branch = "master"
+  name = "github.com/dsnet/compress"
+  packages = [".","bzip2","bzip2/internal/sais","internal","internal/errors","internal/prefix"]
+  revision = "cc9eb1d7ad760af14e8f918698f745e80377af4f"
+
+[[projects]]
   name = "github.com/golang/protobuf"
   packages = ["proto"]
   revision = "aa810b61a9c79d51363740d207bb46cf8e620ed5"
   version = "v1.2.0"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/golang/snappy"
+  packages = ["."]
+  revision = "2e65f85255dbc3072edf28d6b5b8efc472979f5a"
 
 [[projects]]
   name = "github.com/hpcloud/tail"
@@ -14,10 +26,22 @@
   version = "v1.0.0"
 
 [[projects]]
+  name = "github.com/mholt/archiver"
+  packages = ["."]
+  revision = "298df7b5f54d0940dc376a7581ce9c47ecbb07b2"
+  version = "v3.0.1"
+
+[[projects]]
   branch = "master"
   name = "github.com/mitchellh/colorstring"
   packages = ["."]
   revision = "8631ce90f28644f54aeedcb3e389a85174e067d1"
+
+[[projects]]
+  name = "github.com/nwaples/rardecode"
+  packages = ["."]
+  revision = "cc3e4b2381762c56dbcdf9f93be03349a1dc1c14"
+  version = "v1.0.0"
 
 [[projects]]
   name = "github.com/onsi/ginkgo"
@@ -30,6 +54,24 @@
   packages = [".","format","ghttp","internal/assertion","internal/asyncassertion","internal/oraclematcher","internal/testingtsupport","matchers","matchers/support/goraph/bipartitegraph","matchers/support/goraph/edge","matchers/support/goraph/node","matchers/support/goraph/util","types"]
   revision = "7615b9433f86a8bdf29709bf288bc4fd0636a369"
   version = "v1.4.2"
+
+[[projects]]
+  name = "github.com/pierrec/lz4"
+  packages = [".","internal/xxh32"]
+  revision = "635575b42742856941dbc767b44905bb9ba083f6"
+  version = "v2.0.7"
+
+[[projects]]
+  name = "github.com/ulikunitz/xz"
+  packages = [".","internal/hash","internal/xlog","lzma"]
+  revision = "590df8077fbcb06ad62d7714da06c00e5dd2316d"
+  version = "v0.5.5"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/xi2/xz"
+  packages = ["."]
+  revision = "48954b6210f8d154cb5f8484d3a3e1f83489309e"
 
 [[projects]]
   branch = "master"
@@ -77,6 +119,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "43a66d0419c9029c93ef0b6ab1630d2cb408ac56901f912b9b45303c6c30bf5a"
+  inputs-digest = "9d8ec8c4ff939a6771d0e7013c3f33b8089b08d67e1b29fd0fbc4bfb9da1692a"
   solver-name = "gps-cdcl"
   solver-version = 1

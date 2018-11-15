@@ -58,8 +58,20 @@ var _ = Describe("GetLatestVersion", func() {
 				Data: []nuget.SearchResult{
 					nuget.SearchResult{
 						ID:          "Some.Package.Name",
-						Version:     "2.0.2",
+						Version:     "2.0.10",
 						Description: "A test package description",
+						Versions: []nuget.Version{
+							nuget.Version{
+								ID: server.URL() + "/somefeed/api/v3/registration1/dotnetresource.testlibraryone/1.0.1.json",
+								Version: "2.0.9",
+								Downloads: 3,
+							},
+							nuget.Version{
+								ID: server.URL() + "/somefeed/api/v3/registration1/dotnetresource.testlibraryone/1.0.1.json",
+								Version: "2.0.10",
+								Downloads: 4,
+							},
+						},
 					},
 					nuget.SearchResult{
 						ID:          "Some.Other.Package.Name",
@@ -71,20 +83,22 @@ var _ = Describe("GetLatestVersion", func() {
 			statusCode = 200
 		})
 
-		It("returns a version with patch incremented", func() {
+		It("returns the versions", func() {
 			request := check.Request{
 				Source: nugetresource.Source{
-					Framework:   "netcoreapp2.1",
-					Runtime:     "ubuntu.14.04-x64",
 					NugetSource: server.URL() + "/somefeed/api/v3/index.json",
 					PackageID: "Some.Package.Name",
 					PreRelease: false,
 				},
 				Version: nugetresource.Version{},
 			}
-			_, err := check.Execute(request)
+			response, err := check.Execute(request)
 			Ω(err).Should(Succeed())
-			//Ω(response[0].Version).Should(Equal("2.0.2"))
+			Ω(len(response)).Should(Equal(2))
+			Ω(response[0].Version).Should(Equal("2.0.9"))
+			Ω(response[0].PackageID).Should(Equal("Some.Package.Name"))
+			Ω(response[1].Version).Should(Equal("2.0.10"))
+			Ω(response[1].PackageID).Should(Equal("Some.Package.Name"))
 		})
 
 	

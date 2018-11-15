@@ -1,39 +1,41 @@
 package out
 
 import (
+	"path"
 	"time"
-	"os/exec"
+	"context"
+	"github.com/miclip/nuget-resource/nuget"
 
 	"github.com/miclip/nuget-resource"
 )
 
-var ExecCommand = exec.Command
-
 //Execute - provides out capability
 func Execute(request Request, sourceDir string) (Response, []byte, error) {
 	out := []byte{}
+
+	nugetclient := nuget.NewNugetClientv3(request.Source.NugetSource)
+	err:=nugetclient.PublishPackage(context.Background(), request.Source.NugetAPIKey, path.Join(sourceDir,request.Params.PackagePath))
+	if err != nil {
+		nugetresource.Fatal("error publishing package to feed", err)
+	}
+
+	packageVersions, err := nugetclient.GetPackageVersions(context.Background(), request.Source.PackageID, request.Source.PreRelease)
+	if err != nil {
+		nugetresource.Fatal("error querying for latest version from nuget", err)
+	}
+
 	response := Response{
-		Version: nugetresource.VersionTime{
-			Timestamp: time.Now(),
+		Version: nugetresource.Version{
+			PackageID: request.Source.PackageID,
+			Version: packageVersions[len(packageVersions)-1].Version,
 		},
 		Metadata: []nugetresource.MetadataPair{
-			{
-				Name:  "project",
-				Value: request.Params.Project,
-			},
-			{
-				Name:  "framework",
-				Value: request.Source.Framework,
-			},
-			{
-				Name:  "runtime",
-				Value: request.Source.Runtime,
+			nugetresource.MetadataPair{
+			Name: request.Source.PackageID,
+			Value: time.Now().String(),
 			},
 		},
 	}
-
-
-
 	return response, out, nil
 }
 

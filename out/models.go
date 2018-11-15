@@ -6,25 +6,15 @@ import (
 
 type Request struct {
 	Source nugetresource.Source `json:"source"`
-	Params Params                `json:"params"`
+	Params Params               `json:"params"`
 }
 
 type Params struct {
-	Project     string `json:"project"`
-	TestFilter  string `json:"test_filter"`
-	Version     string `json:"version"`
-	PackageType string `json:"package_type"`
+	PackagePath string `json:"package_path"`
 }
 
 type Response struct {
-	Version  nugetresource.VersionTime        `json:"version"`
+	Version  nugetresource.Version        `json:"version"`
 	Metadata []nugetresource.MetadataPair `json:"metadata"`
 }
 
-type ProjectMetaData struct {
-	PackageID   string
-	Path        string
-	Author      string
-	Owner       string
-	Description string
-}

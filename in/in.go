@@ -21,13 +21,13 @@ func Execute(request Request, targetDir string) (Response, []byte, error) {
 	}
 	
 	nugetclient := nuget.NewNugetClientv3(request.Source.NugetSource)
-	err = nugetclient.DownloadPackage(context.Background(), request.Version.PackageID, request.Version.Version, targetDir)
+	file, err := nugetclient.DownloadPackage(context.Background(), request.Version.PackageID, request.Version.Version, targetDir)
 	if err != nil {
 		return Response{}, out, err
 	}
 	nugetresource.Sayf("downloaded package %s %s \n",request.Version.PackageID, request.Version.Version)
 
-	
+	nugetresource.UnarchiveZip(file, targetDir)
 
 	return Response{}, out, nil
 }

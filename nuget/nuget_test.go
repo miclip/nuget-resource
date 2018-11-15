@@ -344,8 +344,6 @@ var _ = Describe("CreateNuspec", func() {
 	})
 })
 
-
-
 var _ = Describe("UploadPackage", func() {
 	var server *ghttp.Server
 	var returnedServiceIndex nuget.ServiceIndex

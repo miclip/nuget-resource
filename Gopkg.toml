@@ -42,3 +42,7 @@
 
 [[constraint]]
   name="gopkg.in/xmlpath.v1"
+
+[[constraint]]
+  name="github.com/mholt/archiver"
+  version = "3.0.1"

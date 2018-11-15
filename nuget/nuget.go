@@ -32,7 +32,7 @@ type NugetClientv3 interface {
 	SearchQueryService(ctx context.Context, searchQueryURL string, query string, preRelease bool) (*SearchResults, error)
 	GetPackageVersions(ctx context.Context, name string, preRelease bool) ([]Version, error)
 	CreateNuspec(packageID string, version string, author string, description string, owner string) Nuspec
-	DownloadPackage(ctx context.Context, packageID string, version string, targetFolder string) error
+	DownloadPackage(ctx context.Context, packageID string, version string, targetFolder string) (string, error)
 	GetNugetApiEndPoint(ctx context.Context, resourceType string) (string, error)
 	CreateNuspecFromProject(project string, version string) (Nuspec, error)
 	AutoIncrementVersion(versionSpec string, version string) (string, error)
@@ -110,8 +110,9 @@ func (client *nugetclientv3) SearchQueryService(ctx context.Context, searchQuery
 func (client *nugetclientv3) PublishPackage(ctx context.Context, apikey string, packagePath string) error {
 	uploadURL, err := client.GetNugetApiEndPoint(ctx, "PackagePublish/2.0.0")
 	if err != nil {
-		log.Fatal("error getting download url", err)
+		log.Fatal("error getting publish url from api", err)
 	}
+	
 	file, err := os.Open(packagePath)
 	if err != nil {
 		return fmt.Errorf("error reading package %s with %v", packagePath, err)
@@ -152,30 +153,30 @@ func (client *nugetclientv3) PublishPackage(ctx context.Context, apikey string, 
 	return nil
 }
 
-func (client *nugetclientv3) DownloadPackage(ctx context.Context, packageID string, version string, targetFolder string) error {
+func (client *nugetclientv3) DownloadPackage(ctx context.Context, packageID string, version string, targetFolder string) (string, error) {
 
 	downloadURL, err := client.GetNugetApiEndPoint(ctx, "PackageBaseAddress/3.0.0")
 	if err != nil {
-		log.Fatal("error getting download url", err)
+		log.Fatal("failed to get download url from api", err)
 	}
 
 	targetFolder = targetFolder + "/packages"
 
 	err = os.MkdirAll(targetFolder, 0755)
 	if err != nil {
-		return err
+		return "",err
 	}
-
-	out, err := os.Create(targetFolder + "/" + packageID + "." + version + ".nupkg")
+	filePath := targetFolder + "/" + packageID + "." + version + ".nupkg"
+	out, err := os.Create(filePath)
 	if err != nil {
-		return err
+		return "",err
 	}
 	defer out.Close()
 
 	queryParams := fmt.Sprintf("%s/%s/%s", packageID, version, packageID+"."+version+".nupkg")
 	req, err := http.NewRequest(http.MethodGet, downloadURL+queryParams, nil)
 	if err != nil {
-		return err
+		return "",err
 	}
 	req = req.WithContext(ctx)
 	var netClient = &http.Client{
@@ -183,19 +184,19 @@ func (client *nugetclientv3) DownloadPackage(ctx context.Context, packageID stri
 	}
 	res, err := netClient.Do(req)
 	if err != nil {
-		return err
+		return "",err
 	}
 	if res.StatusCode != 200 {
-		return fmt.Errorf("error downloading package %d", res.StatusCode)
+		return "",fmt.Errorf("failed downloading package %d", res.StatusCode)
 	}
 	defer res.Body.Close()
 
 	_, err = io.Copy(out, res.Body)
 	if err != nil {
-		return err
+		return "",err
 	}
 
-	return nil
+	return filePath, nil
 }
 
 func (client *nugetclientv3) CreateNuspec(packageID string, version string, author string, description string, owner string) Nuspec {
@@ -276,7 +277,7 @@ func (client *nugetclientv3) GetPackageVersions(ctx context.Context, name string
 
 	searchQueryService, err := client.GetNugetApiEndPoint(ctx, "SearchQueryService")
 	if err != nil {
-		log.Fatal("error getting package version", err)
+		log.Fatal("error getting package version ", err)
 	}
 
 	searchResults, err := client.SearchQueryService(ctx, searchQueryService, name, preRelease)
