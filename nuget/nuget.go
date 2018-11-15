@@ -1,6 +1,7 @@
 package nuget
 
 import (
+	"path/filepath"
 	"bytes"
 	"context"
 	"encoding/json"
@@ -112,8 +113,9 @@ func (client *nugetclientv3) PublishPackage(ctx context.Context, apikey string, 
 	if err != nil {
 		log.Fatal("error getting publish url from api", err)
 	}
-	
-	file, err := os.Open(packagePath)
+
+	matches, _ := filepath.Glob(packagePath)	
+	file, err := os.Open(matches[0])
 	if err != nil {
 		return fmt.Errorf("error reading package %s with %v", packagePath, err)
 	}
