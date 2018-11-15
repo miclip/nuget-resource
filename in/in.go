@@ -27,7 +27,10 @@ func Execute(request Request, targetDir string) (Response, []byte, error) {
 	}
 	nugetresource.Sayf("downloaded package %s %s \n",request.Version.PackageID, request.Version.Version)
 
-	nugetresource.UnarchiveZip(file, targetDir)
+	err = nugetresource.UnarchiveZip(file, targetDir)
+	if err != nil {
+		nugetresource.Fatal("error extracting package", err)
+	}	
 
 	return Response{}, out, nil
 }
