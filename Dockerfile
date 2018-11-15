@@ -4,7 +4,9 @@ ENV CGO_ENABLED 0
 RUN go build -o /assets/in github.com/miclip/nuget-resource/cmd/in
 RUN go build -o /assets/out github.com/miclip/nuget-resource/cmd/out
 RUN go build -o /assets/check github.com/miclip/nuget-resource/cmd/check
+RUN mkdir -p /tests/test_files
 WORKDIR /go/src/github.com/miclip/nuget-resource
+RUN cp ./test_files/* ../../../../../tests/test_files
 RUN set -e; for pkg in $(go list ./...); do \
 		go test -o "/tests/$(basename $pkg).test" -c $pkg; \
 	done
@@ -22,6 +24,7 @@ ENV GOROOT=/goroot \
 
 FROM resource AS tests
 COPY --from=builder /tests /go-tests
+COPY --from=builder /tests/test_files /test_files
 WORKDIR /go-tests
 RUN set -e; for test in /go-tests/*.test; do \
 		$test; \
