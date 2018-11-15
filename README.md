@@ -1,0 +1,3 @@
+# nuget-resource
+
+does stuff
