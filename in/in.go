@@ -1,6 +1,7 @@
 package in
 
 import (
+	"path"
 	"path/filepath"
 	"context"
 	"os"
@@ -35,7 +36,7 @@ func Execute(request Request, targetDir string) (Response, []byte, error) {
 	}
 	nugetresource.Sayf("extracted archive %s to %s", file, targetDir)
 
-	files := filepath.Glob(path.Join(targetDir,"/*")
+	files, _ := filepath.Glob(path.Join(targetDir,"/*"))
 	nugetresource.Sayf("%v", files)
 
 	return Response{}, out, nil
