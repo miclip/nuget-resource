@@ -66,6 +66,8 @@ Given a package the resource will push it to the nuget feed.
 
 * `package_path`: *Required.* Path to package file (nupkg)
 
+* `nuget_cache_delay`: *Optional.* Delay to wait between pushing the package and checking latest version. Some feeds like myget.com are cached.
+
 ## Example Configuration
 
 ### Resource Type

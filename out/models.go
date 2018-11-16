@@ -11,6 +11,7 @@ type Request struct {
 
 type Params struct {
 	PackagePath string `json:"package_path"`
+	NugetCacheDelay int `json:"nuget_cache_delay"`
 }
 
 type Response struct {
