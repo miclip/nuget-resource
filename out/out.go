@@ -19,22 +19,27 @@ func Execute(request Request, sourceDir string) (Response, []byte, error) {
 		nugetresource.Fatal("error publishing package to feed", err)
 	}
 
+	// sleep to allow time for nuget caches to clear 
+	time.Sleep(30 * time.Millisecond)
+
 	packageVersions, err := nugetclient.GetPackageVersions(context.Background(), request.Source.PackageID, request.Source.PreRelease)
 	if err != nil {
 		nugetresource.Fatal("error querying for latest version from nuget", err)
 	}
 
+	var version string
+	if len(packageVersions)==0 {
+		version = "?"
+	} else {
+		version = packageVersions[len(packageVersions)-1].Version
+	}
+
 	response := Response{
 		Version: nugetresource.Version{
 			PackageID: request.Source.PackageID,
-			Version: packageVersions[len(packageVersions)-1].Version,
+			Version: version,
 		},
-		Metadata: []nugetresource.MetadataPair{
-			nugetresource.MetadataPair{
-			Name: request.Source.PackageID,
-			Value: time.Now().String(),
-			},
-		},
+		Metadata: []nugetresource.MetadataPair{},
 	}
 	return response, out, nil
 }
