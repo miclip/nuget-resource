@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/miclip/nuget-resource.svg?branch=master)](https://travis-ci.org/miclip/nuget-resource)
+
 # Nuget Resource
 
 Pushes, downloads, extracts dotnet core libraries and applications to and from a nuget feed.
