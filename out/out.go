@@ -21,6 +21,7 @@ func Execute(request Request, sourceDir string) (Response, []byte, error) {
 
 	// sleep to allow time for nuget caches to clear 
 	if request.Params.NugetCacheDelay > 0 {
+		nugetresource.Sayf("waiting for cache refresh, %v seconds", request.Params.NugetCacheDelay)
 		time.Sleep(time.Duration(request.Params.NugetCacheDelay) * time.Millisecond)
 	}	
 
