@@ -20,7 +20,7 @@ func Execute(request Request, sourceDir string) (Response, []byte, error) {
 	}
 
 	// sleep to allow time for nuget caches to clear 
-	time.Sleep(30 * time.Millisecond)
+	time.Sleep(60 * time.Millisecond)
 
 	packageVersions, err := nugetclient.GetPackageVersions(context.Background(), request.Source.PackageID, request.Source.PreRelease)
 	if err != nil {
