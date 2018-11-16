@@ -34,5 +34,10 @@ func Execute(request Request, targetDir string) (Response, []byte, error) {
 	}
 	nugetresource.Sayf("extracted archive %s to %s", file, targetDir)
 
-	return Response{}, out, nil
+	response := Response{
+		Version : request.Version,
+		Metadata : []nugetresource.MetadataPair{},		
+	}	
+
+	return response, out, nil
 }
