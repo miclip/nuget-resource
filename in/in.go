@@ -1,10 +1,12 @@
 package in
 
 import (
+	"path/filepath"
 	"context"
 	"os"
-	"github.com/miclip/nuget-resource/nuget"
+
 	"github.com/miclip/nuget-resource"
+	"github.com/miclip/nuget-resource/nuget"
 )
 
 //Execute - provides in capability
@@ -19,18 +21,22 @@ func Execute(request Request, targetDir string) (Response, []byte, error) {
 	if err != nil {
 		return Response{}, out, err
 	}
-	
+
 	nugetclient := nuget.NewNugetClientv3(request.Source.NugetSource)
 	file, err := nugetclient.DownloadPackage(context.Background(), request.Version.PackageID, request.Version.Version, targetDir)
 	if err != nil {
 		return Response{}, out, err
 	}
-	nugetresource.Sayf("downloaded package %s %s \n",request.Version.PackageID, request.Version.Version)
+	nugetresource.Sayf("downloaded package %s %s \n", request.Version.PackageID, request.Version.Version)
 
 	err = nugetresource.UnarchiveZip(file, targetDir)
 	if err != nil {
 		nugetresource.Fatal("error extracting package", err)
-	}	
+	}
+	nugetresource.Sayf("extracted archive %s to %s", file, targetDir)
+
+	files := filepath.Glob(path.Join(targetDir,"/*")
+	nugetresource.Sayf("%v", files)
 
 	return Response{}, out, nil
 }

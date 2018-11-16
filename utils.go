@@ -1,6 +1,7 @@
 package nugetresource
 
 import (
+	"github.com/miclip/nuget-resource"
 	"compress/flate"
 	"github.com/mholt/archiver"
 	"fmt"
