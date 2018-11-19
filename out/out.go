@@ -22,7 +22,7 @@ func Execute(request Request, sourceDir string) (Response, []byte, error) {
 	// sleep to allow time for nuget caches to clear 
 	if request.Params.NugetCacheDelay > 0 {
 		nugetresource.Sayf("waiting for cache refresh, %v seconds", request.Params.NugetCacheDelay)
-		time.Sleep(time.Duration(request.Params.NugetCacheDelay) * time.Millisecond)
+		time.Sleep(time.Duration(int64(request.Params.NugetCacheDelay) * int64(time.Millisecond)))
 	}	
 
 	packageVersions, err := nugetclient.GetPackageVersions(context.Background(), request.Source.PackageID, request.Source.PreRelease)
