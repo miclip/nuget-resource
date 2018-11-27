@@ -34,6 +34,8 @@ func Execute(request Request, targetDir string) (Response, []byte, error) {
 	}
 	nugetresource.Sayf("extracted archive %s to %s", file, targetDir)
 
+	nugetresource.ChmodAllFiles(targetDir, 0600)
+
 	response := Response{
 		Version : request.Version,
 		Metadata : []nugetresource.MetadataPair{},		

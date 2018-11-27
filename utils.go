@@ -2,9 +2,11 @@ package nugetresource
 
 import (
 	"compress/flate"
-	"github.com/mholt/archiver"
 	"fmt"
 	"os"
+	"path/filepath"
+
+	"github.com/mholt/archiver"
 
 	"github.com/mitchellh/colorstring"
 )
@@ -18,7 +20,7 @@ func Sayf(message string, args ...interface{}) {
 	fmt.Fprintf(os.Stderr, message, args...)
 }
 
-// MakeZip creates a zip archive file 
+// MakeZip creates a zip archive file
 func MakeZip(zipName string, files []string) error {
 
 	z := archiver.Zip{
@@ -36,7 +38,7 @@ func MakeZip(zipName string, files []string) error {
 	return nil
 }
 
-// UnarchiveZip ... 
+// UnarchiveZip ...
 func UnarchiveZip(zipName string, destination string) error {
 	z := archiver.Zip{
 		CompressionLevel:       flate.DefaultCompression,
@@ -51,4 +53,21 @@ func UnarchiveZip(zipName string, destination string) error {
 		return err
 	}
 	return nil
+}
+
+func ChmodAllFiles(directory string, mode os.FileMode) {
+	err := filepath.Walk(directory,
+		func(path string, info os.FileInfo, err error) error {
+			if err != nil {
+				return err
+			}
+			err = os.Chmod(path, mode)
+			if err != nil {
+				Sayf("chmod failed %v", err)
+			}
+			return nil
+		})
+	if err != nil {
+		Sayf("chmod failed %v", err)
+	}
 }
